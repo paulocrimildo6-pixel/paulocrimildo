@@ -1,0 +1,84 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Perfil, progresso e assinatura do estudante",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "streakDays": { "type": "number" },
+        "lastStudyDate": { "type": "string" },
+        "translationCount": { "type": "number" },
+        "voiceCount": { "type": "number" },
+        "loginMethod": { "type": "string" },
+        "isBlocked": { "type": "boolean" },
+        "isAdmin": { "type": "boolean" },
+        "subscription_plan": { "type": "string" },
+        "subscription_status": { "type": "string" },
+        "cakto_customer_id": { "type": "string" },
+        "cakto_product_id": { "type": "string" },
+        "cakto_subscription_id": { "type": "string" },
+        "subscription_started_at": { "type": "string" },
+        "subscription_expires_at": { "type": "string" },
+        "isPremium": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "lastAccessAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "SubscriptionEvent": {
+      "title": "SubscriptionEvent",
+      "description": "Registro de eventos e webhooks da Cakto para auditoria e controle de acesso",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "event_id": { "type": "string" },
+        "event_type": { "type": "string" },
+        "user_id": { "type": "string" },
+        "user_email": { "type": "string" },
+        "cakto_product_id": { "type": "string" },
+        "cakto_subscription_id": { "type": "string" },
+        "payload": { "type": "object" },
+        "processed_at": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["event_id", "event_type"]
+    },
+    "Translation": {
+      "title": "Translation",
+      "description": "Histórico de traduções do usuário",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "originalText": { "type": "string" },
+        "translation": { "type": "string" },
+        "targetLanguageName": { "type": "string" },
+        "targetLanguageCode": { "type": "string" },
+        "phonetic": { "type": "string" },
+        "explanation": { "type": "string" },
+        "isFavorite": { "type": "boolean" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["userId", "originalText", "translation"]
+    },
+    "VocabularyItem": {
+      "title": "VocabularyItem",
+      "description": "Item do vocabulário do usuário",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "word": { "type": "string" },
+        "translation": { "type": "string" },
+        "explanation": { "type": "string" },
+        "listName": { "type": "string" },
+        "isMastered": { "type": "boolean" },
+        "isFavorite": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "word", "translation"]
+    }
+  }
+}

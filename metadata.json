@@ -1,0 +1,6 @@
+{
+  "name": "LingoConversa",
+  "description": "Uma aplicação inovadora de aprendizagem de idiomas baseada em conversação real com IA desde o primeiro dia, com correções dinâmicas e simulações de cenários reais.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

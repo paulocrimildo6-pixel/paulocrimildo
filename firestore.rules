@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if requesting user is admin
+    function isAdmin() {
+      return request.auth != null && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true ||
+         request.auth.token.email in ['admin@lingoconversa.com', 'luiscristovaositoe755@gmail.com']);
+    }
+
+    match /users/{userId} {
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      
+      // User cannot self-elevate to admin or self-grant premium
+      allow create: if request.auth != null && (request.auth.uid == userId || isAdmin()) &&
+        (!('isPremium' in request.resource.data) || request.resource.data.isPremium == false || isAdmin()) &&
+        (!('isAdmin' in request.resource.data) || request.resource.data.isAdmin == false || isAdmin());
+
+      allow update: if request.auth != null && (
+        isAdmin() ||
+        (request.auth.uid == userId &&
+         (!('subscription_plan' in request.resource.data) || request.resource.data.subscription_plan == resource.data.subscription_plan) &&
+         (!('subscription_status' in request.resource.data) || request.resource.data.subscription_status == resource.data.subscription_status) &&
+         (!('isPremium' in request.resource.data) || request.resource.data.isPremium == resource.data.isPremium) &&
+         (!('isAdmin' in request.resource.data) || request.resource.data.isAdmin == resource.data.isAdmin))
+      );
+
+      allow delete: if isAdmin();
+      
+      match /{allSubcollections=**} {
+        allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      }
+    }
+
+    match /subscription_events/{docId} {
+      allow read: if request.auth != null && (
+        (resource.data.user_id != null && resource.data.user_id == request.auth.uid) ||
+        (resource.data.user_email != null && resource.data.user_email == request.auth.token.email) ||
+        isAdmin()
+      );
+      allow write: if isAdmin();
+    }
+    
+    match /translations/{docId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    match /conversations/{docId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    match /vocabulary/{docId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+  }
+}
